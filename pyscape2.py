@@ -2,6 +2,7 @@ from lxml  import html
 import requests
 import csv
 from unidecode import unidecode
+import urllib2
 
 
 def main():
@@ -12,31 +13,31 @@ def main():
     for house in openhouse:
         address = house.xpath('.//div[@class="realestate-info"]/div[@class="realestate-head"]/a/h4//text()')
         properties = house.xpath('.//div[@class="realestate-info"]/div[@class="realestate-properties"]/span/strong/text()')
-        #priceval = properties[0]
-        #sizeval = properties[1]
-        #verdval = house.xpath('//strong[@class="fs-openhouse-cube-info-answer"]/text()')
-
-        
+        href = house.xpath('.//div[@class="realestate-info"]/div[@class="realestate-head"]/a/@href')
+               
         
         #combostring = "Address;", replacer(str(address)), "Verð;", replacer(str(priceval)), "Stærð;", replacer(str(sizeval))
         #print replacer(address[0])
-        
-        megastring = replacer(address[0]), ";",properties[0],";",properties[1]
+        urlstring = "https://www.mbl.is" + href[0]
+        address[0].encode('utf8', 'ignore')
+        megastring = stripNonAlphaNum(stripTags(address[0]).lower()), ";",fixpricestring(properties[0]),";",properties[1], ";", urlstring
             
         print megastring
-        #for prop in properties:
-         #   print prop
-        #houses.append(combostring);
-        #print "Verð",  str(verdval).strip(" ") , "\n"
-
-        #with open('houses.csv', 'wb') as f:
-         #   writer = csv.writer(f, delimiter=';')
+        houses.append(megastring)
+        with open('houses.csv', 'wb') as f:
+            writer = csv.writer(f, delimiter=';')
             
             #writer = csv.write(csvfile)
-          #  writer.writerows(houses)
-     
+            writer.writerows(houses)
 
 
+
+def stripNonAlphaNum(text):
+    import re
+    return re.compile(r'\W+', re.UNICODE).split(text)
+        
+def fixpricestring(rawprice):
+    return rawprice.replace('kr.', '').replace(' ','').replace('\n','').replace('.','').replace('m','')
 
 def abstractor():
     page = requests.get('https://www.mbl.is/fasteignir/')
@@ -64,7 +65,7 @@ def abstractor():
 
 
 def replacer(data):
-    return data.encode('ascii', 'ignore').decode('ascii')
+    return str(data)
 
 if __name__ =="__main__":
     main()
