@@ -5,6 +5,40 @@ from unidecode import unidecode
 
 
 def main():
+    page = requests.get('https://www.mbl.is/fasteignir/leit/?q=80f323c5382397611e72800316f250d1')
+    tree = html.fromstring(page.content)
+    openhouse = tree.xpath('//div[@class="single-realestate openhouse "]')
+    houses = []
+    for house in openhouse:
+        address = house.xpath('.//div[@class="realestate-info"]/div[@class="realestate-head"]/a/h4//text()')
+        properties = house.xpath('.//div[@class="realestate-info"]/div[@class="realestate-properties"]/span/strong/text()')
+        #priceval = properties[0]
+        #sizeval = properties[1]
+        #verdval = house.xpath('//strong[@class="fs-openhouse-cube-info-answer"]/text()')
+
+        
+        
+        #combostring = "Address;", replacer(str(address)), "Verð;", replacer(str(priceval)), "Stærð;", replacer(str(sizeval))
+        #print replacer(address[0])
+        
+        megastring = replacer(address[0]), ";",properties[0],";",properties[1]
+            
+        print megastring
+        #for prop in properties:
+         #   print prop
+        #houses.append(combostring);
+        #print "Verð",  str(verdval).strip(" ") , "\n"
+
+        #with open('houses.csv', 'wb') as f:
+         #   writer = csv.writer(f, delimiter=';')
+            
+            #writer = csv.write(csvfile)
+          #  writer.writerows(houses)
+     
+
+
+
+def abstractor():
     page = requests.get('https://www.mbl.is/fasteignir/')
     tree = html.fromstring(page.content)
     openhouse = tree.xpath('//div[@class="fs-estate-cube"]')
@@ -27,11 +61,10 @@ def main():
             
             #writer = csv.write(csvfile)
             writer.writerows(houses)
-            
 
 
 def replacer(data):
-    return unidecode(u,data)
+    return data.encode('ascii', 'ignore').decode('ascii')
 
 if __name__ =="__main__":
     main()
