@@ -3,7 +3,7 @@ import requests
 import csv
 from unidecode import unidecode
 import urllib2
-
+import json
 
 def main():
     page = requests.get('https://www.mbl.is/fasteignir/leit/?q=80f323c5382397611e72800316f250d1')
@@ -25,27 +25,30 @@ def main():
         properties = properties[0].encode('utf-8')
         urlstring = ''.join(urlstring)
         
-        #print address
-        #megastring = [address.encode('utf-8'), 'Price;',fixpricestring(properties[0]).encode('utf-8'), 'Url;',urlstring.encode('utf-8')]
-        megastring = replaceSvigar(str(address)), str(fixpricestring(properties)), urlstring
-        #print megastring
+        
+        megastring = {'Address':''.join(replaceSvigar(str(address))), "Price":str(fixpricestring(properties)),"Price": urlstring}
+        
+        
+        
+        jason = json.dumps(megastring)
+        print jason
+        houses.append(jason)
 
-    
-        houses.append([megastring])
+        printToExcel(houses)
 
-        #print megastring
-   
-    with open('houses.csv', 'wb') as f:
+def printToExcel(houses):
+    with open('houses.csv', 'wb+') as f:
             writer = csv.writer(f, delimiter=';')
-            #for row in houses:
-              #  writer.writerow(''.join(row))
-            
-            writer.writerows(houses)        
+            for house in houses:
+                writer.writerow(house['Address'])
+            #writer.writerows(house['Address'])   
+
 
 def replaceSvigar(takethem):
-    return ''.join(takethem)
+    return ''.join(takethem).replace(',','')
 
 def graveyard():
+    #megastring = [address.encode('utf-8'), 'Price;',fixpricestring(properties[0]).encode('utf-8'), 'Url;',urlstring.encode('utf-8')]
     #for h in houses:
     #    place = ""
     #    place = h[0].decode('utf-8').replace(',','')
