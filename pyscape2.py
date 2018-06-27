@@ -26,22 +26,19 @@ def main():
         urlstring = ''.join(urlstring)
         
         
-        megastring = {'Address':''.join(replaceSvigar(str(address))), "Price":str(fixpricestring(properties)),"Price": urlstring}
-        
-        
-        
-        jason = json.dumps(megastring)
-        print jason
-        houses.append(jason)
+        megastring = ''.join(replaceSvigar(str(address))), str(fixpricestring(properties)),urlstring
+        #jason = json.dumps(megastring)
+        #print jason
+        houses.append(megastring)
 
-        printToExcel(houses)
+    printToExcel(houses)
 
 def printToExcel(houses):
     with open('houses.csv', 'wb+') as f:
             writer = csv.writer(f, delimiter=';')
-            for house in houses:
-                writer.writerow(house['Address'])
-            #writer.writerows(house['Address'])   
+            #for house in houses:
+            #    writer.writerow(house)
+            writer.writerows(houses)   
 
 
 def replaceSvigar(takethem):
