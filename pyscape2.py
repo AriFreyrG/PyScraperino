@@ -27,22 +27,23 @@ def main():
         
         #print address
         #megastring = [address.encode('utf-8'), 'Price;',fixpricestring(properties[0]).encode('utf-8'), 'Url;',urlstring.encode('utf-8')]
-        megastring = str(address), str(fixpricestring(properties)), urlstring
+        megastring = replaceSvigar(str(address)), str(fixpricestring(properties)), urlstring
         #print megastring
 
-        print megastring
-        
-        houses.append(megastring)
+    
+        houses.append([megastring])
 
+        #print megastring
    
     with open('houses.csv', 'wb') as f:
             writer = csv.writer(f, delimiter=';')
-            for row in houses:
-                writer.writerow(row)
+            #for row in houses:
+              #  writer.writerow(''.join(row))
             
-            #writer.writerows(houses)        
+            writer.writerows(houses)        
 
-
+def replaceSvigar(takethem):
+    return ''.join(takethem)
 
 def graveyard():
     #for h in houses:
